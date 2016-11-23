@@ -2,6 +2,7 @@ package ru.click.sms.service;
 
 import org.springframework.http.ResponseEntity;
 import ru.click.sms.model.SmsResponse;
+import ru.click.sms.service.exception.SmsException;
 
 /**
  * Интерфейс для парсера ответа сервера
@@ -19,5 +20,5 @@ public interface ResponseParser {
      * @param response ответ сервера
      * @return сведения о смс, {@link SmsResponse}
      */
-    SmsResponse parse(ResponseEntity<String> response);
+    SmsResponse parse(ResponseEntity<String> response) throws SmsException;
 }
