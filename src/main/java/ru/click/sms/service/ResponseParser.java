@@ -17,8 +17,7 @@ public interface ResponseParser {
     /**
      * Парсит ответа сервера
      * @param response ответ сервера
-     * @param <T> тип тела ответа
      * @return сведения о смс, {@link SmsResponse}
      */
-    <T> SmsResponse parse(ResponseEntity<T> response);
+    SmsResponse parse(ResponseEntity<String> response);
 }
