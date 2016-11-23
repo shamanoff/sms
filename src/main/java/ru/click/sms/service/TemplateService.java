@@ -1,4 +1,4 @@
-package ru.click.sms;
+package ru.click.sms.service;
 
 /**
  * Интерфэйс для управления шаблонами СМС
