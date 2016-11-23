@@ -17,28 +17,45 @@ public class SmsResponse {
     private final String smsReply;
 
     /**
-     * Конструктор, создающий экземпляр класса на основе идетификатора СМС и пользовательского сообщения
-     *
-     * @param smsId    идетификатор сообщения, который возвращает СМС-шлюз
-     * @param smsReply пользовательское сообщение
+     * Статус смс сообщения
      */
-    public SmsResponse(String smsId, String smsReply) {
+    // TODO: 23.11.2016 заменить на enum
+    private final String smsStatus;
+
+    /**
+     * Конструктор, создающий экземпляр класса на основе
+     * идетификатора СМС, пользовательского сообщения и статуса смс сообщения
+     *
+     * @param smsId     идетификатор смс сообщения, который возвращает СМС-шлюз
+     * @param smsReply  пользовательское сообщение
+     * @param smsStatus статус смс сообщения
+     */
+    public SmsResponse(String smsId, String smsReply, String smsStatus) {
         hasText(smsId, "Идентификатор сообщения не может быть пустым");
+        hasText(smsStatus, "Сообщение должно иметь статус");
         this.smsId = smsId;
         this.smsReply = smsReply;
+        this.smsStatus = smsStatus;
     }
 
     /**
-     * @return возвращает идентификато сообщения
+     * @return идентификатор смс сообщения
      */
     public String id() {
         return smsId;
     }
 
     /**
-     * @return возвращает сообщение
+     * @return пользовательское сообщение
      */
     public String reply() {
         return smsReply;
+    }
+
+    /**
+     * @return статус смс сообщения
+     */
+    public String status() {
+        return smsStatus;
     }
 }

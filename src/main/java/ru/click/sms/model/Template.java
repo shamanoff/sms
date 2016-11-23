@@ -49,7 +49,7 @@ public class Template {
         return this;
     }
 
-    public boolean isHasParams() {
+    public boolean hasParams() {
         return hasParams;
     }
 
