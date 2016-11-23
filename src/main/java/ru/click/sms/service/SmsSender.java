@@ -1,4 +1,6 @@
-package ru.click.sms;
+package ru.click.sms.service;
+
+import ru.click.sms.model.SmsResponce;
 
 public interface SmsSender {
     /**

@@ -2,7 +2,6 @@ package ru.click.sms.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import ru.click.sms.TemplateService;
 import ru.click.sms.model.Template;
 import ru.click.sms.repository.TemplateRepository;
 

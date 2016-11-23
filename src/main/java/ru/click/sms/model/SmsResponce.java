@@ -1,4 +1,4 @@
-package ru.click.sms;
+package ru.click.sms.model;
 
 
 import static org.springframework.util.Assert.hasText;
