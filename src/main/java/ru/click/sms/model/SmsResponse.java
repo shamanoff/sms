@@ -16,26 +16,19 @@ public class SmsResponse {
      */
     private final String smsReply;
 
-    /**
-     * Статус смс сообщения
-     */
-    // TODO: 23.11.2016 заменить на enum
-    private final String smsStatus;
 
     /**
      * Конструктор, создающий экземпляр класса на основе
-     * идетификатора СМС, пользовательского сообщения и статуса смс сообщения
+     * идетификатора СМС, пользовательского сообщения
      *
      * @param smsId     идетификатор смс сообщения, который возвращает СМС-шлюз
      * @param smsReply  пользовательское сообщение
-     * @param smsStatus статус смс сообщения
      */
     public SmsResponse(String smsId, String smsReply, String smsStatus) {
         hasText(smsId, "Идентификатор сообщения не может быть пустым");
         hasText(smsStatus, "Сообщение должно иметь статус");
         this.smsId = smsId;
         this.smsReply = smsReply;
-        this.smsStatus = smsStatus;
     }
 
     /**
@@ -52,10 +45,4 @@ public class SmsResponse {
         return smsReply;
     }
 
-    /**
-     * @return статус смс сообщения
-     */
-    public String status() {
-        return smsStatus;
-    }
 }
