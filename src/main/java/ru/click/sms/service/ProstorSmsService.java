@@ -17,6 +17,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static org.springframework.util.Assert.notNull;
+import static ru.click.sms.utils.Utils.sleep;
 
 /**
  * Реализация интерфейса {@link SmsSender} для
@@ -113,6 +114,7 @@ public class ProstorSmsService implements SmsSender {
             if (!status.is4xxClientError()) {
                 return responseParser.parse(response);
             }
+            sleep(10);
         }
         throw new BadRequestSmsException("Сервис не доступен");
     }
