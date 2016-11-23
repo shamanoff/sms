@@ -1,6 +1,7 @@
 package ru.click.sms.service;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Component;
 import ru.click.sms.model.SmsResponse;
 
 /**
@@ -11,6 +12,7 @@ import ru.click.sms.model.SmsResponse;
  *
  * @author Евгений Уткин (Eugene Utkin)
  */
+@Component("prostor-sms-parser")
 public class ProstorSmsResponseParser implements ResponseParser {
     /**
      * Парсит ответа сервера
@@ -19,7 +21,7 @@ public class ProstorSmsResponseParser implements ResponseParser {
      * @return сведения о смс, {@link SmsResponse}
      */
     @Override
-    public <T> SmsResponse parse(ResponseEntity<T> response) {
+    public SmsResponse parse(ResponseEntity<String> response) {
         // TODO: 23.11.2016 написать реализацию
         return null;
     }

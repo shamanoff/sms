@@ -9,7 +9,7 @@ import org.springframework.web.client.RestOperations;
 import ru.click.sms.model.Sender;
 import ru.click.sms.model.SmsResponse;
 import ru.click.sms.model.Template;
-import ru.click.sms.repository.TemplateRepository;
+import ru.click.sms.service.annotations.ProstorSmsParser;
 import ru.click.sms.service.exception.BadRequestSmsException;
 import ru.click.sms.service.exception.IncorrectParamsTemplateException;
 
@@ -29,33 +29,49 @@ import static ru.click.sms.utils.Utils.sleep;
  *
  * @author Евгений Уткин (Eugene Utkin)
  */
-@Service
+@Service("prostor-sms-sender")
 public class ProstorSmsService implements SmsSender {
 
     /**
      * Репозиторий шаблонов смс
      */
-    private final TemplateRepository tmpRepo;
+    private final TemplateReader tmpService;
 
+    /**
+     * Http клиент
+     */
     private final RestOperations rest;
 
+    /**
+     * Аккаунт от смс шлюза
+     */
     private final Sender sender;
 
+    /**
+     * Парсер ответа
+     */
     private final ResponseParser responseParser;
 
     /**
      * Конструктор для внедрения зависимостей
      *
-     * @param tmpRepo        репозиторий шаблонов смс
+     * @param tmpService        репозиторий шаблонов смс
      * @param rest           http client
      * @param sender         свойства отправителя
      * @param responseParser парсер ответа
      */
     @Autowired
-    public ProstorSmsService(TemplateRepository tmpRepo, RestOperations rest, Sender sender, ResponseParser responseParser) {
-        notNull(tmpRepo, "Репозиторий шаблонов смс не может быть равным null");
+    public ProstorSmsService(
+            TemplateReader tmpService,
+            RestOperations rest,
+            Sender sender,
+            @ProstorSmsParser ResponseParser responseParser
+    ) {
+        notNull(tmpService, "Репозиторий шаблонов смс не может быть равным null");
         notNull(rest, "Rest Template не может быть равным null");
-        this.tmpRepo = tmpRepo;
+        notNull(sender, "Свойства акканута смс шлюза не могут быть равным null");
+        notNull(responseParser, "Парсер ответа не может быть раным null");
+        this.tmpService = tmpService;
         this.rest = rest;
         this.sender = sender;
         this.responseParser = responseParser;
@@ -132,7 +148,7 @@ public class ProstorSmsService implements SmsSender {
     }
 
     private ResponseEntity<String> doRequest(int templateId, String phone, @Nullable Object[] args) {
-        Template smsTemplate = tmpRepo.findOne(templateId);
+        Template smsTemplate = tmpService.getTemplate(templateId);
         String smsText;
         try {
             smsText = args == null ? smsTemplate.getText() : smsTemplate.getText(args);
