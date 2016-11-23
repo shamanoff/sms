@@ -1,4 +1,8 @@
-package ru.click.sms;
+package ru.click.sms.service;
+
+import ru.click.sms.model.SmsResponse;
+
+import javax.annotation.Nullable;
 
 public interface SmsSender {
     /**
@@ -6,9 +10,9 @@ public interface SmsSender {
      *
      * @param templateId номер шаблона сообщения
      * @param phone      номер телефона
-     * @return смс ответ {@link SmsResponce}
+     * @return смс ответ {@link SmsResponse}
      */
-    SmsResponce send(Integer templateId, String phone);
+    SmsResponse send(int templateId, String phone);
 
     /**
      * Метод для отправки СМС
@@ -16,18 +20,18 @@ public interface SmsSender {
      * @param templateId номер шаблона сообщения
      * @param phone      номер телефона
      * @param args       параметры шаблона
-     * @return смс ответ {@link SmsResponce}
+     * @return смс ответ {@link SmsResponse}
      */
-    SmsResponce send(Integer templateId, String phone, Object... args);
+    SmsResponse send(int templateId, String phone, @Nullable Object... args);
 
     /**
      * Метод с гарантированной доставкой СМС
      *
      * @param templateId номер шаблона сообщения
      * @param phone      номер телефона
-     * @return смс ответ  {@link SmsResponce}
+     * @return смс ответ  {@link SmsResponse}
      */
-    SmsResponce guarantedSend(Integer templateId, String phone);
+    SmsResponse guaranteedSend(int templateId, String phone);
 
     /**
      * Метод с гарантированной доставкой СМС
@@ -35,10 +39,10 @@ public interface SmsSender {
      * @param templateId номер шаблона сообщения
      * @param phone      номер телефона
      * @param args       параметры шаблона
-     * @return смс ответ  {@link SmsResponce}
+     * @return смс ответ  {@link SmsResponse}
      */
 
-    SmsResponce guarantedSend(Integer templateId, String phone, Object... args);
+    SmsResponse guaranteedSend(int templateId, String phone, @Nullable Object... args);
 
 
 }

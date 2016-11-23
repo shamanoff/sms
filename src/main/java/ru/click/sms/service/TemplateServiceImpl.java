@@ -2,7 +2,6 @@ package ru.click.sms.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import ru.click.sms.TemplateService;
 import ru.click.sms.model.Template;
 import ru.click.sms.repository.TemplateRepository;
 
@@ -12,10 +11,21 @@ import static org.springframework.util.Assert.notNull;
  * Сервис для управления шаблонами СМС
  */
 @Service
-public class TemplateServiceImpl implements TemplateService {
+public class TemplateServiceImpl implements TemplateService, TemplateReader {
 
+    /**
+     * Репозиторий шаблонов смс
+     */
+    private final TemplateRepository tempRep;
+
+    /**
+     * Конструктор для внедрения зависимостей
+     * @param tempRep репозиторий шаблонов смс
+     */
     @Autowired
-    private TemplateRepository tempRep;
+    public TemplateServiceImpl(TemplateRepository tempRep) {
+        this.tempRep = tempRep;
+    }
 
     /**
      * {@inheritDoc}
@@ -63,5 +73,16 @@ public class TemplateServiceImpl implements TemplateService {
             return true;
         }
         return false;
+    }
+
+    /**
+     * Читает шаблон по id
+     *
+     * @param templateId идентификатор шаблона
+     * @return шаблон смс
+     */
+    @Override
+    public Template getTemplate(int templateId) {
+        return tempRep.findOne(templateId);
     }
 }
