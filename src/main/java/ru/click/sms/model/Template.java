@@ -5,6 +5,9 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
+import static java.lang.String.format;
+import static org.springframework.util.Assert.notEmpty;
+
 /**
  * ДТО шаблона с СМС собщениями
  */
@@ -44,13 +47,14 @@ public class Template {
         return text;
     }
 
+    public String getText(Object... params) {
+        notEmpty(params, hasParams ? "Параметры сообщения обязаны присутствовать" : "Шаблон не имеет параметров");
+        return format(text, params);
+    }
+
     public Template setText(String text) {
         this.text = text;
         return this;
-    }
-
-    public boolean hasParams() {
-        return hasParams;
     }
 
     public Template setHasParams(boolean hasParams) {

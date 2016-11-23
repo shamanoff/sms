@@ -10,7 +10,9 @@ import ru.click.sms.model.SmsResponse;
 import ru.click.sms.model.Template;
 import ru.click.sms.repository.TemplateRepository;
 import ru.click.sms.service.exception.IncorrectParamsTemplateException;
+import ru.click.sms.service.exception.SmsException;
 
+import javax.annotation.Nullable;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -64,14 +66,8 @@ public class ProstorSmsService implements SmsSender {
      * @return смс ответ {@link SmsResponse}
      */
     @Override
-    public SmsResponse send(Integer templateId, String phone) {
-        Template smsTemplate = tmpRepo.findOne(templateId);
-        if (smsTemplate.hasParams()) {
-            throw new IncorrectParamsTemplateException("Нет параметров для шаблона");
-        }
-        val params = restParams(smsTemplate.getText(), phone);
-        ResponseEntity<String> response = rest.getForEntity(sender.sendUri(), String.class, params);
-        return responseParser.parse(response);
+    public SmsResponse send(int templateId, String phone) {
+        return send(templateId, phone, (Object) null);
     }
 
     /**
@@ -83,8 +79,21 @@ public class ProstorSmsService implements SmsSender {
      * @return смс ответ {@link SmsResponse}
      */
     @Override
-    public SmsResponse send(Integer templateId, String phone, Object... args) {
-        return null;
+    public SmsResponse send(int templateId, String phone, @Nullable Object... args) {
+        Template smsTemplate = tmpRepo.findOne(templateId);
+        String smsText;
+        try {
+            smsText = args == null ? smsTemplate.getText() : smsTemplate.getText(args);
+        } catch (Exception e) {
+            throw new IncorrectParamsTemplateException(e.getMessage(), e);
+        }
+        val params = restParams(smsText, phone);
+        try {
+            ResponseEntity<String> response = rest.getForEntity(sender.sendUri(), String.class, params);
+            return responseParser.parse(response);
+        } catch (Exception e) {
+            throw new SmsException(e.getMessage(), e);
+        }
     }
 
     /**
@@ -95,7 +104,7 @@ public class ProstorSmsService implements SmsSender {
      * @return смс ответ  {@link SmsResponse}
      */
     @Override
-    public SmsResponse guarantedSend(Integer templateId, String phone) {
+    public SmsResponse guaranteedSend(int templateId, String phone) {
         return null;
     }
 
@@ -108,7 +117,7 @@ public class ProstorSmsService implements SmsSender {
      * @return смс ответ  {@link SmsResponse}
      */
     @Override
-    public SmsResponse guarantedSend(Integer templateId, String phone, Object... args) {
+    public SmsResponse guaranteedSend(int templateId, String phone, Object... args) {
         return null;
     }
 
