@@ -3,6 +3,7 @@ package ru.click.sms.service;
 import lombok.val;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestOperations;
 import ru.click.sms.model.Sender;
@@ -94,6 +95,7 @@ public class ProstorSmsService implements SmsSender {
      * @return смс ответ  {@link SmsResponse}
      */
     @Override
+    @Async
     public SmsResponse guaranteedSend(int templateId, String phone) {
         return guaranteedSend(templateId, phone, (Object) null);
     }
@@ -107,6 +109,7 @@ public class ProstorSmsService implements SmsSender {
      * @return смс ответ  {@link SmsResponse}
      */
     @Override
+    @Async
     public SmsResponse guaranteedSend(int templateId, String phone, @Nullable Object... args) {
         for (int i = 0; i < 3; i++) {
             ResponseEntity<String> response = doRequest(templateId, phone, args);
