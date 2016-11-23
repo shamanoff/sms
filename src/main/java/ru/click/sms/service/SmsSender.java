@@ -2,6 +2,8 @@ package ru.click.sms.service;
 
 import ru.click.sms.model.SmsResponse;
 
+import javax.annotation.Nullable;
+
 public interface SmsSender {
     /**
      * Метод для отправки СМС
@@ -10,7 +12,7 @@ public interface SmsSender {
      * @param phone      номер телефона
      * @return смс ответ {@link SmsResponse}
      */
-    SmsResponse send(Integer templateId, String phone);
+    SmsResponse send(int templateId, String phone);
 
     /**
      * Метод для отправки СМС
@@ -20,7 +22,7 @@ public interface SmsSender {
      * @param args       параметры шаблона
      * @return смс ответ {@link SmsResponse}
      */
-    SmsResponse send(Integer templateId, String phone, Object... args);
+    SmsResponse send(int templateId, String phone, @Nullable Object... args);
 
     /**
      * Метод с гарантированной доставкой СМС
@@ -29,7 +31,7 @@ public interface SmsSender {
      * @param phone      номер телефона
      * @return смс ответ  {@link SmsResponse}
      */
-    SmsResponse guarantedSend(Integer templateId, String phone);
+    SmsResponse guaranteedSend(int templateId, String phone);
 
     /**
      * Метод с гарантированной доставкой СМС
@@ -40,7 +42,7 @@ public interface SmsSender {
      * @return смс ответ  {@link SmsResponse}
      */
 
-    SmsResponse guarantedSend(Integer templateId, String phone, Object... args);
+    SmsResponse guaranteedSend(int templateId, String phone, @Nullable Object... args);
 
 
 }

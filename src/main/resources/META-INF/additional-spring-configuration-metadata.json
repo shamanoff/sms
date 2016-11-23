@@ -1,0 +1,24 @@
+{
+  "properties": [
+    {
+      "name": "spring.sms.account.login",
+      "type": "java.lang.String",
+      "description": "Логин для сервиса по отправке смс."
+    },
+    {
+      "name": "spring.sms.account.password",
+      "type": "java.lang.String",
+      "description": "Пароль для сервиса по отправке смс."
+    },
+    {
+      "name": "spring.sms.account.api.send",
+      "type": "java.net.URI",
+      "description": "Description for spring.sms.account.api.send."
+    },
+    {
+      "name": "spring.sms.account.api.status",
+      "type": "java.net.URI",
+      "description": "Description for spring.sms.account.api.status."
+    }
+  ]
+}
