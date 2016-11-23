@@ -9,8 +9,8 @@ import ru.click.sms.model.Sender;
 import ru.click.sms.model.SmsResponse;
 import ru.click.sms.model.Template;
 import ru.click.sms.repository.TemplateRepository;
+import ru.click.sms.service.exception.BadRequestSmsException;
 import ru.click.sms.service.exception.IncorrectParamsTemplateException;
-import ru.click.sms.service.exception.SmsException;
 
 import javax.annotation.Nullable;
 import java.util.HashMap;
@@ -43,9 +43,10 @@ public class ProstorSmsService implements SmsSender {
 
     /**
      * Конструктор для внедрения зависимостей
-     * @param tmpRepo репозиторий шаблонов смс
-     * @param rest http client
-     * @param sender свойства отправителя
+     *
+     * @param tmpRepo        репозиторий шаблонов смс
+     * @param rest           http client
+     * @param sender         свойства отправителя
      * @param responseParser парсер ответа
      */
     @Autowired
@@ -80,20 +81,8 @@ public class ProstorSmsService implements SmsSender {
      */
     @Override
     public SmsResponse send(int templateId, String phone, @Nullable Object... args) {
-        Template smsTemplate = tmpRepo.findOne(templateId);
-        String smsText;
-        try {
-            smsText = args == null ? smsTemplate.getText() : smsTemplate.getText(args);
-        } catch (Exception e) {
-            throw new IncorrectParamsTemplateException(e.getMessage(), e);
-        }
-        val params = restParams(smsText, phone);
-        try {
-            ResponseEntity<String> response = rest.getForEntity(sender.sendUri(), String.class, params);
-            return responseParser.parse(response);
-        } catch (Exception e) {
-            throw new SmsException(e.getMessage(), e);
-        }
+        ResponseEntity<String> response = doRequest(templateId, phone, args);
+        return responseParser.parse(response);
     }
 
     /**
@@ -105,7 +94,7 @@ public class ProstorSmsService implements SmsSender {
      */
     @Override
     public SmsResponse guaranteedSend(int templateId, String phone) {
-        return null;
+        return guaranteedSend(templateId, phone, (Object) null);
     }
 
     /**
@@ -117,8 +106,15 @@ public class ProstorSmsService implements SmsSender {
      * @return смс ответ  {@link SmsResponse}
      */
     @Override
-    public SmsResponse guaranteedSend(int templateId, String phone, Object... args) {
-        return null;
+    public SmsResponse guaranteedSend(int templateId, String phone, @Nullable Object... args) {
+        for (int i = 0; i < 3; i++) {
+            ResponseEntity<String> response = doRequest(templateId, phone, args);
+            val status = response.getStatusCode();
+            if (!status.is4xxClientError()) {
+                return responseParser.parse(response);
+            }
+        }
+        throw new BadRequestSmsException("Сервис не доступен");
     }
 
     private Map<String, ?> restParams(String text, String phone) {
@@ -128,5 +124,18 @@ public class ProstorSmsService implements SmsSender {
         map.put("phone", phone);
         map.put("text", text);
         return map;
+    }
+
+    private ResponseEntity<String> doRequest(int templateId, String phone, @Nullable Object[] args) {
+        Template smsTemplate = tmpRepo.findOne(templateId);
+        String smsText;
+        try {
+            smsText = args == null ? smsTemplate.getText() : smsTemplate.getText(args);
+        } catch (Exception e) {
+            throw new IncorrectParamsTemplateException(e.getMessage(), e);
+        }
+        val params = restParams(smsText, phone);
+
+        return rest.getForEntity(sender.sendUri(), String.class, params);
     }
 }
