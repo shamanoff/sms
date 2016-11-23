@@ -1,6 +1,6 @@
 package ru.click.sms.service;
 
-import ru.click.sms.model.SmsResponce;
+import ru.click.sms.model.SmsResponse;
 
 public interface SmsSender {
     /**
@@ -8,9 +8,9 @@ public interface SmsSender {
      *
      * @param templateId номер шаблона сообщения
      * @param phone      номер телефона
-     * @return смс ответ {@link SmsResponce}
+     * @return смс ответ {@link SmsResponse}
      */
-    SmsResponce send(Integer templateId, String phone);
+    SmsResponse send(Integer templateId, String phone);
 
     /**
      * Метод для отправки СМС
@@ -18,18 +18,18 @@ public interface SmsSender {
      * @param templateId номер шаблона сообщения
      * @param phone      номер телефона
      * @param args       параметры шаблона
-     * @return смс ответ {@link SmsResponce}
+     * @return смс ответ {@link SmsResponse}
      */
-    SmsResponce send(Integer templateId, String phone, Object... args);
+    SmsResponse send(Integer templateId, String phone, Object... args);
 
     /**
      * Метод с гарантированной доставкой СМС
      *
      * @param templateId номер шаблона сообщения
      * @param phone      номер телефона
-     * @return смс ответ  {@link SmsResponce}
+     * @return смс ответ  {@link SmsResponse}
      */
-    SmsResponce guarantedSend(Integer templateId, String phone);
+    SmsResponse guarantedSend(Integer templateId, String phone);
 
     /**
      * Метод с гарантированной доставкой СМС
@@ -37,10 +37,10 @@ public interface SmsSender {
      * @param templateId номер шаблона сообщения
      * @param phone      номер телефона
      * @param args       параметры шаблона
-     * @return смс ответ  {@link SmsResponce}
+     * @return смс ответ  {@link SmsResponse}
      */
 
-    SmsResponce guarantedSend(Integer templateId, String phone, Object... args);
+    SmsResponse guarantedSend(Integer templateId, String phone, Object... args);
 
 
 }

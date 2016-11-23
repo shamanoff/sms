@@ -6,7 +6,7 @@ import static org.springframework.util.Assert.hasText;
 /**
  * Этот класс хранит ответ на запрос отправки СМС
  */
-public class SmsResponce {
+public class SmsResponse {
     /**
      * Идетификатор сообщения, который возвращает СМС-шлюз
      */
@@ -22,7 +22,7 @@ public class SmsResponce {
      * @param smsId    идетификатор сообщения, который возвращает СМС-шлюз
      * @param smsReply пользовательское сообщение
      */
-    public SmsResponce(String smsId, String smsReply) {
+    public SmsResponse(String smsId, String smsReply) {
         hasText(smsId, "Идентификатор сообщения не может быть пустым");
         this.smsId = smsId;
         this.smsReply = smsReply;
