@@ -16,7 +16,9 @@ import ru.click.sms.service.exception.IncorrectParamsTemplateException;
 import javax.annotation.Nullable;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.Future;
 
+import static java.util.concurrent.CompletableFuture.completedFuture;
 import static org.springframework.util.Assert.notNull;
 import static ru.click.sms.utils.Utils.sleep;
 
@@ -55,7 +57,7 @@ public class ProstorSmsService implements SmsSender {
     /**
      * Конструктор для внедрения зависимостей
      *
-     * @param tmpService        репозиторий шаблонов смс
+     * @param tmpService     репозиторий шаблонов смс
      * @param rest           http client
      * @param sender         свойства отправителя
      * @param responseParser парсер ответа
@@ -112,7 +114,7 @@ public class ProstorSmsService implements SmsSender {
      */
     @Override
     @Async
-    public SmsResponse guaranteedSend(int templateId, String phone) {
+    public Future<SmsResponse> guaranteedSend(int templateId, String phone) {
         return guaranteedSend(templateId, phone, (Object) null);
     }
 
@@ -126,12 +128,13 @@ public class ProstorSmsService implements SmsSender {
      */
     @Override
     @Async
-    public SmsResponse guaranteedSend(int templateId, String phone, @Nullable Object... args) {
+    public Future<SmsResponse> guaranteedSend(int templateId, String phone, @Nullable Object... args) {
         for (int i = 0; i < 3; i++) {
             ResponseEntity<String> response = doRequest(templateId, phone, args);
             val status = response.getStatusCode();
             if (!status.is4xxClientError()) {
-                return responseParser.parse(response);
+                SmsResponse smsResponse = responseParser.parse(response);
+                return completedFuture(smsResponse);
             }
             sleep(10);
         }
