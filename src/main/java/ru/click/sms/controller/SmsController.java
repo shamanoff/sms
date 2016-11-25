@@ -45,7 +45,7 @@ public class SmsController {
             @RequestParam Integer template,
             @RequestParam @Pattern(regexp = "[9][0-9]{9}", message = "{validation.phone}") String phone
     ) {
-        return ok(sender.send(template, phone).reply());
+        return ok(sender.send(template, phone).reply().orElse("Смс успешно отправлено"));
     }
 
     @ExceptionHandler({IncorrectParamsTemplateException.class, BadRequestSmsException.class})
