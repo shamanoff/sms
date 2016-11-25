@@ -1,6 +1,8 @@
 package ru.click.sms.model;
 
 
+import java.util.Optional;
+
 import static org.springframework.util.Assert.hasText;
 
 /**
@@ -24,12 +26,31 @@ public class SmsResponse {
      * @param smsId     идетификатор смс сообщения, который возвращает СМС-шлюз
      * @param smsReply  пользовательское сообщение
      */
-    public SmsResponse(String smsId, String smsReply, String smsStatus) {
+    private SmsResponse(String smsId, String smsReply) {
         hasText(smsId, "Идентификатор сообщения не может быть пустым");
-        hasText(smsStatus, "Сообщение должно иметь статус");
         this.smsId = smsId;
         this.smsReply = smsReply;
     }
+
+    /**
+     * Статический конструктор для создания объекта с идентификатором смс и сообщением
+     * @param smsId     идетификатор смс сообщения, который возвращает СМС-шлюз
+     * @param smsReply  пользовательское сообщение
+     * @return ответ сервера на отправку смс
+     */
+    public static SmsResponse of(String smsId, String smsReply) {
+        return new SmsResponse(smsId, smsReply);
+    }
+
+    /**
+     * Статический конструктор для создания ответа с пустым сообщением
+     * @param smsId     идетификатор смс сообщения, который возвращает СМС-шлюз
+     * @return ответ сервера на отправку смс
+     */
+    public static SmsResponse of(String smsId) {
+        return new SmsResponse(smsId, null);
+    }
+
 
     /**
      * @return идентификатор смс сообщения
@@ -41,8 +62,8 @@ public class SmsResponse {
     /**
      * @return пользовательское сообщение
      */
-    public String reply() {
-        return smsReply;
+    public Optional<String> reply() {
+        return Optional.ofNullable(smsReply);
     }
 
 }
