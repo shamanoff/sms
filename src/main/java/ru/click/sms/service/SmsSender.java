@@ -3,6 +3,7 @@ package ru.click.sms.service;
 import ru.click.sms.model.SmsResponse;
 
 import javax.annotation.Nullable;
+import java.util.concurrent.Future;
 
 public interface SmsSender {
     /**
@@ -31,7 +32,7 @@ public interface SmsSender {
      * @param phone      номер телефона
      * @return смс ответ  {@link SmsResponse}
      */
-    SmsResponse guaranteedSend(int templateId, String phone);
+    Future<SmsResponse> guaranteedSend(int templateId, String phone);
 
     /**
      * Метод с гарантированной доставкой СМС
@@ -42,7 +43,7 @@ public interface SmsSender {
      * @return смс ответ  {@link SmsResponse}
      */
 
-    SmsResponse guaranteedSend(int templateId, String phone, @Nullable Object... args);
+    Future<SmsResponse> guaranteedSend(int templateId, String phone, @Nullable Object... args);
 
 
 }

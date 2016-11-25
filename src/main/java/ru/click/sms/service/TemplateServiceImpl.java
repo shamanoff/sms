@@ -52,7 +52,13 @@ public class TemplateServiceImpl implements TemplateService, TemplateReader {
      */
     @Override
     public boolean deleteTemplate(Integer templateId) {
+        Template template = tempRep.findOne(templateId);
+        if (template != null) {
+            tempRep.delete(templateId);
+            return true;
+        }
         return false;
+
     }
 
     /**
@@ -60,6 +66,12 @@ public class TemplateServiceImpl implements TemplateService, TemplateReader {
      */
     @Override
     public boolean updateTemplate(Integer templateId, String templateText) {
+        Template template = tempRep.findOne(templateId);
+        if (template != null) {
+            template = template.setText(templateText);
+            tempRep.save(template);
+            return true;
+        }
         return false;
     }
 
