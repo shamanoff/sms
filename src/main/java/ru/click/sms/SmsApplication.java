@@ -11,8 +11,9 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.validation.beanvalidation.MethodValidationPostProcessor;
 import org.springframework.web.client.RestOperations;
 import org.springframework.web.client.RestTemplate;
-import org.springframework.web.util.UriTemplateHandlerImpl;
+import org.springframework.web.util.UriTemplateHandler;
 import ru.click.sms.model.Sender;
+import ru.click.sms.utils.UriEncoder;
 
 @SpringBootApplication
 @EnableConfigurationProperties(Sender.class)
@@ -22,8 +23,13 @@ public class SmsApplication {
     @Bean
     public RestOperations restOperations() {
         RestTemplate restTemplate = new RestTemplate();
-        restTemplate.setUriTemplateHandler(new UriTemplateHandlerImpl());
+        restTemplate.setUriTemplateHandler(uriTemplateHandler());
         return restTemplate;
+    }
+
+    @Bean
+    public UriTemplateHandler uriTemplateHandler() {
+        return new UriEncoder();
     }
 
     @Bean
