@@ -44,7 +44,7 @@ public class ProstorSmsResponseParser implements ResponseParser {
         if ("accepted".equals(smsStatusAndID[0])) {
             return SmsResponse.of(smsStatusAndID[1], "Сообщение принято сервисом");
         }
-        String responseMessage = responseMessages.get(smsStatusAndID[0]);
+        String responseMessage = responseMessages.get(smsStatusAndID[1]);
         throw new BadRequestSmsException(responseMessage);
     }
 }
