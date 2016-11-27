@@ -3,18 +3,14 @@ package ru.click.sms.controller;
 import lombok.val;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.util.StringUtils;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import ru.click.sms.model.SmsResponse;
 import ru.click.sms.service.SmsSender;
 import ru.click.sms.service.annotations.ProstorSmsSender;
 import ru.click.sms.service.exception.BadRequestSmsException;
-import ru.click.sms.service.exception.IncorrectParamsTemplateException;
-import ru.click.sms.service.exception.NotFoundTemplateException;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
@@ -43,28 +39,17 @@ public class SmsController {
         this.sender = sender;
     }
 
-    // TODO: 24.11.2016 замени параметр на json, чтобы можно было передавать параметры для шаблонов
     @GetMapping("/sms/send")
     public ResponseEntity<String> sendSms(
-            @RequestParam Integer template,
+
             @RequestParam @Pattern(regexp = "[9][0-9]{9}", message = "{validation.phone}") String phone,
-            @RequestParam(required = false) String params
+            @RequestParam String text
     ) {
-        SmsResponse response;
-        if (StringUtils.hasText(params)) {
-            String[] args = params.split(",");
-            if (args.length == 0) {
-                return badRequest().body("Некорректная строка с параметрами");
-            }
-            response = sender.send(template, phone, args);
-        } else {
-            response = sender.send(template, phone);
-        }
-        String message = response.reply().orElse("Смс успешно отправлено");
-        return ok(message);
+        return ok(sender.send(text, phone));
     }
 
-    @ExceptionHandler({IncorrectParamsTemplateException.class, BadRequestSmsException.class, NotFoundTemplateException.class})
+
+    @ExceptionHandler({BadRequestSmsException.class})
     public ResponseEntity<String> handleError(Exception e) {
         return badRequest().body(e.getMessage());
     }
@@ -80,5 +65,6 @@ public class SmsController {
         return badRequest().body(message);
     }
 
-
 }
+
+

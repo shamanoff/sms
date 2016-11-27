@@ -35,14 +35,14 @@ public class ProstorSmsResponseParser implements ResponseParser {
      * @return сведения о смс, {@link SmsResponse}
      */
     @Override
-    public SmsResponse parse(ResponseEntity<String> response) {
+    public String parse(ResponseEntity<String> response) {
 
         String responseBody = response.getBody();
 
         String[] smsStatusAndID = responseBody.split(";");
 
         if ("accepted".equals(smsStatusAndID[0])) {
-            return SmsResponse.of(smsStatusAndID[1], "Сообщение принято сервисом");
+            return smsStatusAndID[1] ;
         }
         String responseMessage = responseMessages.get(smsStatusAndID[1]);
         throw new BadRequestSmsException(responseMessage);

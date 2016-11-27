@@ -20,5 +20,5 @@ public interface ResponseParser {
      * @param response ответ сервера
      * @return сведения о смс, {@link SmsResponse}
      */
-    SmsResponse parse(ResponseEntity<String> response) throws SmsException;
+    String parse(ResponseEntity<String> response) throws SmsException;
 }
