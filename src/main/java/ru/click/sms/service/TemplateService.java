@@ -3,7 +3,7 @@ package ru.click.sms.service;
 /**
  * Интерфэйс для управления шаблонами СМС
  */
-public interface TemplateService {
+public interface TemplateService  extends TemplateReader {
     /**
      * Добавляет шаблон
      *

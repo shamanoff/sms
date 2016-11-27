@@ -1,9 +1,6 @@
 package ru.click.sms.model;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 import static java.lang.String.format;
 import static org.springframework.util.Assert.notEmpty;
@@ -11,7 +8,6 @@ import static org.springframework.util.Assert.notEmpty;
 /**
  * ДТО шаблона с СМС собщениями
  */
-
 @Entity(name = "templates")
 public class Template {
 
@@ -28,10 +24,12 @@ public class Template {
     /**
      * Текст шаблона
      */
+    @Column(name = "text")
     private String text;
     /**
      * Имеет ли шаблон парамметры
      */
+    @Column(name = "has_params")
     private boolean hasParams;
 
     public Integer getId() {

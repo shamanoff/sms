@@ -5,13 +5,19 @@ import org.springframework.stereotype.Service;
 import ru.click.sms.model.Template;
 import ru.click.sms.repository.TemplateRepository;
 
+import java.util.List;
+import java.util.Optional;
+
+import static java.util.Optional.ofNullable;
+import static java.util.stream.Collectors.toList;
+import static java.util.stream.StreamSupport.stream;
 import static org.springframework.util.Assert.notNull;
 
 /**
  * Сервис для управления шаблонами СМС
  */
 @Service
-public class TemplateServiceImpl implements TemplateService, TemplateReader {
+public class TemplateServiceImpl implements TemplateService {
 
     /**
      * Репозиторий шаблонов смс
@@ -82,7 +88,13 @@ public class TemplateServiceImpl implements TemplateService, TemplateReader {
      * @return шаблон смс
      */
     @Override
-    public Template getTemplate(int templateId) {
-        return tempRep.findOne(templateId);
+    public Optional<Template> getTemplate(int templateId) {
+        return ofNullable(tempRep.findOne(templateId));
+    }
+
+    @Override
+    public List<Template> getTemplates() {
+        Iterable<Template> templates = tempRep.findAll();
+        return stream(templates.spliterator(), false).collect(toList());
     }
 }

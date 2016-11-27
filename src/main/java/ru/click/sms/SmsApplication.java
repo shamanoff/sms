@@ -1,5 +1,6 @@
 package ru.click.sms;
 
+
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -10,6 +11,7 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.validation.beanvalidation.MethodValidationPostProcessor;
 import org.springframework.web.client.RestOperations;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriTemplateHandlerImpl;
 import ru.click.sms.model.Sender;
 
 @SpringBootApplication
@@ -19,7 +21,9 @@ public class SmsApplication {
 
     @Bean
     public RestOperations restOperations() {
-        return new RestTemplate();
+        RestTemplate restTemplate = new RestTemplate();
+        restTemplate.setUriTemplateHandler(new UriTemplateHandlerImpl());
+        return restTemplate;
     }
 
     @Bean
