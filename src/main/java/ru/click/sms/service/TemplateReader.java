@@ -2,6 +2,9 @@ package ru.click.sms.service;
 
 import ru.click.sms.model.Template;
 
+import java.util.List;
+import java.util.Optional;
+
 /**
  * Интерфейс для чтения шаблонов смс
  * <p>
@@ -17,5 +20,7 @@ public interface TemplateReader {
      * @param templateId идентификатор шаблона
      * @return шаблон смс
      */
-    Template getTemplate(int templateId);
+    Optional<Template> getTemplate(int templateId);
+
+    List<Template> getTemplates();
 }
