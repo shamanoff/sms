@@ -3,14 +3,18 @@ package ru.click.sms.controller;
 import lombok.val;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.StringUtils;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import ru.click.sms.model.SmsResponse;
 import ru.click.sms.service.SmsSender;
+import ru.click.sms.service.annotations.ProstorSmsSender;
 import ru.click.sms.service.exception.BadRequestSmsException;
 import ru.click.sms.service.exception.IncorrectParamsTemplateException;
+import ru.click.sms.service.exception.NotFoundTemplateException;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
@@ -34,7 +38,7 @@ public class SmsController {
     private final SmsSender sender;
 
     @Autowired
-    public SmsController(SmsSender sender) {
+    public SmsController(@ProstorSmsSender SmsSender sender) {
         notNull(sender, "Sms sender не может быть равным null");
         this.sender = sender;
     }
@@ -43,12 +47,24 @@ public class SmsController {
     @GetMapping("/sms/send")
     public ResponseEntity<String> sendSms(
             @RequestParam Integer template,
-            @RequestParam @Pattern(regexp = "[9][0-9]{9}", message = "{validation.phone}") String phone
+            @RequestParam @Pattern(regexp = "[9][0-9]{9}", message = "{validation.phone}") String phone,
+            @RequestParam(required = false) String params
     ) {
-        return ok(sender.send(template, phone).reply().orElse("Смс успешно отправлено"));
+        SmsResponse response;
+        if (StringUtils.hasText(params)) {
+            String[] args = params.split(",");
+            if (args.length == 0) {
+                return badRequest().body("Некорректная строка с параметрами");
+            }
+            response = sender.send(template, phone, args);
+        } else {
+            response = sender.send(template, phone);
+        }
+        String message = response.reply().orElse("Смс успешно отправлено");
+        return ok(message);
     }
 
-    @ExceptionHandler({IncorrectParamsTemplateException.class, BadRequestSmsException.class})
+    @ExceptionHandler({IncorrectParamsTemplateException.class, BadRequestSmsException.class, NotFoundTemplateException.class})
     public ResponseEntity<String> handleError(Exception e) {
         return badRequest().body(e.getMessage());
     }
